@@ -1,0 +1,33 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29209.152
+MinimumVisualStudioVersion = 15.0.26124.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TailCall", "TailCall\TailCall.csproj", "{22703340-55CB-4FC2-9BCB-69A899B12544}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4D99DCFE-5E3F-42B0-9670-2029E75D914E} = {4D99DCFE-5E3F-42B0-9670-2029E75D914E}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TailCall.Fody", "TailCall.Fody\TailCall.Fody.csproj", "{4D99DCFE-5E3F-42B0-9670-2029E75D914E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{22703340-55CB-4FC2-9BCB-69A899B12544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22703340-55CB-4FC2-9BCB-69A899B12544}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22703340-55CB-4FC2-9BCB-69A899B12544}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22703340-55CB-4FC2-9BCB-69A899B12544}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D99DCFE-5E3F-42B0-9670-2029E75D914E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D99DCFE-5E3F-42B0-9670-2029E75D914E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D99DCFE-5E3F-42B0-9670-2029E75D914E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D99DCFE-5E3F-42B0-9670-2029E75D914E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {16EE0E1C-BD92-4B4E-820E-2E62AADA2647}
+	EndGlobalSection
+EndGlobal
