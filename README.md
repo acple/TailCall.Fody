@@ -24,5 +24,10 @@ Add <TailCall /> to your `FodyWeavers.xml`
 
 then all functions called at tail will be prefixed.
 
+## Limitations
+* Does not treat ValueType instance method calls
+* Does not treat generic type instance's method calls without constraints `where T : class`
+* Does not treat a method that has any byreference parameters
+
 ## License
 MIT
