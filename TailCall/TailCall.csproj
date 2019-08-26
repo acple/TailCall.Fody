@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>acple</Authors>
     <Description>Fody add-in simply adding tailcall IL prefix</Description>
     <Copyright>(c) 2019 acple</Copyright>

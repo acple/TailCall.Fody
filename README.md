@@ -9,7 +9,7 @@ Insert below section into your csproj:
 ```csproj
 <ItemGroup>
   <PackageReference Include="Fody" Version="6.0.0" PrivateAssets="All" />
-  <PackageReference Include="TailCall.Fody" Version="1.0.0" PrivateAssets="All" />
+  <PackageReference Include="TailCall.Fody" Version="1.0.1" PrivateAssets="All" />
 </ItemGroup>
 ```
 
