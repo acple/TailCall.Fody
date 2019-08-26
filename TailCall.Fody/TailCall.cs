@@ -9,9 +9,9 @@ namespace TailCall.Fody
         public void AddTailPrefix(MethodDefinition method)
         {
             var body = method.Body;
-            var tailCallInstructions = body.Instructions.Where(IsTarget).Where(IsTailable).ToArray();
+            var targets = body.Instructions.Where(IsTarget).Where(IsTailable).ToArray();
 
-            foreach (var call in tailCallInstructions)
+            foreach (var call in targets)
             {
                 var il = body.GetILProcessor();
 
