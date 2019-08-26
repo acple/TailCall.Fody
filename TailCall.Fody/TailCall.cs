@@ -9,7 +9,7 @@ namespace TailCall.Fody
         public void AddTailPrefix(MethodDefinition method)
         {
             var body = method.Body;
-            var tailCallInstructions = body.Instructions.Where(IsTarget).ToArray();
+            var tailCallInstructions = body.Instructions.Where(IsTarget).Where(IsTailable).ToArray();
 
             foreach (var call in tailCallInstructions)
             {
@@ -34,5 +34,17 @@ namespace TailCall.Fody
 
         private static bool IsTailed(Instruction call)
             => call.Previous?.OpCode == OpCodes.Tail;
+
+        private static bool IsTailable(Instruction call)
+            => !IsConstrainedGeneric(call) && call.Operand is MethodReference method && !IsValueTypeInstanceMethod(method) && !HasByReferenceParameter(method);
+
+        private static bool IsConstrainedGeneric(Instruction call)
+            => call.Previous?.OpCode == OpCodes.Constrained;
+
+        private static bool IsValueTypeInstanceMethod(MethodReference method)
+            => method.HasThis && method.DeclaringType.IsValueType;
+
+        private static bool HasByReferenceParameter(MethodReference method)
+            => method.Parameters.Any(parameter => parameter.ParameterType.IsByReference);
     }
 }
