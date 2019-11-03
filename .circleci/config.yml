@@ -8,8 +8,11 @@ jobs:
     steps:
       - checkout
       - run:
+          name: build
+          command: dotnet build -c Release --no-incremental -v=normal
+      - run:
           name: pack
-          command: dotnet pack -c Release TailCall --output ./nuget
+          command: dotnet pack -c Release --no-build TailCall --output ./nuget
       - store_artifacts:
           path: ./nuget
       - run:
