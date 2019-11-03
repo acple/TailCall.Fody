@@ -1,0 +1,30 @@
+version: 2.1
+
+jobs:
+  pack_and_push:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/sdk:3.0-alpine
+    working_directory: /project
+    steps:
+      - checkout
+      - run:
+          name: pack
+          command: dotnet pack -c Release TailCall --output ./nuget
+      - store_artifacts:
+          path: ./nuget
+      - run:
+          name: push
+          command: >-
+            dotnet nuget push ./nuget/TailCall.Fody.*.nupkg
+            -s https://www.nuget.org -k ${NUGET_APIKEY}
+
+workflows:
+  automatic_deploy:
+    jobs:
+      - pack_and_push:
+          context: nuget-publish
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+(-.+)?$/
