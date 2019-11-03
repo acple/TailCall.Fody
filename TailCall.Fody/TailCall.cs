@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -6,6 +7,19 @@ namespace TailCall.Fody
 {
     public class TailCall
     {
+        private static readonly IEnumerable<OpCode> Jumps = new[]
+        {
+            OpCodes.Beq, OpCodes.Beq_S,
+            OpCodes.Bge, OpCodes.Bge_S, OpCodes.Bge_Un, OpCodes.Bge_Un_S,
+            OpCodes.Bgt, OpCodes.Bgt_S, OpCodes.Bgt_Un, OpCodes.Bgt_Un_S,
+            OpCodes.Ble, OpCodes.Ble_S, OpCodes.Ble_Un, OpCodes.Ble_Un_S,
+            OpCodes.Blt, OpCodes.Blt_S, OpCodes.Blt_Un, OpCodes.Blt_Un_S,
+            OpCodes.Bne_Un, OpCodes.Bne_Un_S,
+            OpCodes.Br, OpCodes.Br_S,
+            OpCodes.Brfalse, OpCodes.Brfalse_S,
+            OpCodes.Brtrue, OpCodes.Brtrue_S,
+        };
+
         public void AddTailPrefix(MethodDefinition method)
         {
             var body = method.Body;
@@ -14,12 +28,13 @@ namespace TailCall.Fody
             foreach (var call in targets)
             {
                 var il = body.GetILProcessor();
-
-                // require clone original instruction to reset jump target references
-                var clone = Instruction.Create(call.OpCode, call.Operand as MethodReference);
+                var jumps = body.Instructions.Where(x => Jumps.Contains(x.OpCode) && x.Operand.Equals(call)).ToArray();
                 var tail = Instruction.Create(OpCodes.Tail);
-                il.Replace(call, tail);
-                il.InsertAfter(tail, clone);
+
+                il.InsertBefore(call, tail);
+
+                foreach (var jump in jumps)
+                    jump.Operand = tail;
             }
         }
 
