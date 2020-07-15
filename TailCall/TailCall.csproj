@@ -7,10 +7,10 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>1.0.3</Version>
+    <Version>1.1.0</Version>
     <Authors>acple</Authors>
     <Description>Fody add-in simply adding tailcall IL prefix</Description>
-    <Copyright>(c) 2019 acple</Copyright>
+    <Copyright>(c) 2019-2020 acple</Copyright>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/acple/TailCall.Fody</PackageProjectUrl>
