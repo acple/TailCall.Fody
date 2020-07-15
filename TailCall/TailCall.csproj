@@ -16,7 +16,6 @@
     <PackageProjectUrl>https://github.com/acple/TailCall.Fody</PackageProjectUrl>
     <RepositoryUrl>https://github.com/acple/TailCall.Fody.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <RepositoryBranch>v$(Version)</RepositoryBranch>
     <PackageTags>fody;functional</PackageTags>
   </PropertyGroup>
 

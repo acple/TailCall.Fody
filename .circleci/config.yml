@@ -8,11 +8,16 @@ jobs:
     steps:
       - checkout
       - run:
+          name: info
+          command: dotnet --info
+      - run:
           name: build
-          command: dotnet build -c Release --no-incremental -v=normal
+          command: dotnet build -c Release --no-incremental -v normal
       - run:
           name: pack
-          command: dotnet pack -c Release --no-build TailCall --output ./nuget
+          command: >-
+            dotnet pack -c Release --no-build -v normal TailCall --output ./nuget
+            -p:RepositoryBranch=${CIRCLE_BRANCH},RepositoryCommit=${CIRCLE_SHA1}
       - store_artifacts:
           path: ./nuget
       - run:
