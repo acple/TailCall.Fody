@@ -27,15 +27,35 @@ namespace TailCall.Fody
 
             foreach (var call in targets)
             {
-                var il = body.GetILProcessor();
                 var jumps = body.Instructions.Where(x => Jumps.Contains(x.OpCode) && x.Operand.Equals(call)).ToArray();
                 var tail = Instruction.Create(OpCodes.Tail);
 
-                il.InsertBefore(call, tail);
+                body.GetILProcessor().InsertBefore(call, tail);
 
                 foreach (var jump in jumps)
                     jump.Operand = tail;
+
+                MoveSequencePoint(method.DebugInformation, call, tail);
             }
+        }
+
+        private static void MoveSequencePoint(MethodDebugInformation debugInformation, Instruction from, Instruction to)
+        {
+            if (debugInformation.GetSequencePoint(from) is not { } current)
+                return;
+
+            var moved = new SequencePoint(to, current.Document)
+            {
+                StartLine = current.StartLine,
+                StartColumn = current.StartColumn,
+                EndLine = current.EndLine,
+                EndColumn = current.EndColumn,
+            };
+
+            var sequencePoints = debugInformation.SequencePoints;
+
+            sequencePoints.Remove(current);
+            sequencePoints.Add(moved);
         }
 
         private static bool IsTarget(Instruction instruction)
