@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   pack_and_push:
     docker:
-      - image: mcr.microsoft.com/dotnet/core/sdk:3.0-alpine
+      - image: mcr.microsoft.com/dotnet/sdk:5.0-alpine
     working_directory: /project
     steps:
       - checkout
