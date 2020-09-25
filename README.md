@@ -9,12 +9,12 @@ Insert below section into your csproj:
 ```csproj
 <ItemGroup>
   <PackageReference Include="Fody" Version="6.0.0" PrivateAssets="All" />
-  <PackageReference Include="TailCall.Fody" Version="1.0.3" PrivateAssets="All" />
+  <PackageReference Include="TailCall.Fody" Version="*" PrivateAssets="All" />
 </ItemGroup>
 ```
 
 ## Usage
-Add <TailCall /> to your `FodyWeavers.xml`
+Add `<TailCall />` to your `FodyWeavers.xml`
 
 ```xml
 <Weavers>
