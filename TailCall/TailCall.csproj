@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <Authors>acple</Authors>
     <Description>Fody add-in simply adding tailcall IL prefix</Description>
     <Copyright>(c) 2019-2020 acple</Copyright>
