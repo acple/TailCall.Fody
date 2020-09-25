@@ -1,10 +1,14 @@
 version: 2.1
 
-jobs:
-  pack_and_push:
+executors:
+  dotnet:
     docker:
       - image: mcr.microsoft.com/dotnet/sdk:5.0-alpine
     working_directory: /project
+
+jobs:
+  pack_and_push:
+    executor: dotnet
     steps:
       - checkout
       - run:
@@ -16,7 +20,8 @@ jobs:
       - run:
           name: pack
           command: >-
-            dotnet pack -c Release --no-build -v normal TailCall --output ./nuget
+            dotnet pack -c Release --no-build -v normal TailCall
+            --output ./nuget
             -p:RepositoryBranch=${CIRCLE_BRANCH},RepositoryCommit=${CIRCLE_SHA1}
       - store_artifacts:
           path: ./nuget
