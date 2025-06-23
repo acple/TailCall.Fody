@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mono.Cecil.Rocks;
 
 namespace TailCall.Fody
 {
@@ -17,6 +18,8 @@ namespace TailCall.Fody
 
             var ilProcessor = body.GetILProcessor();
 
+            body.SimplifyMacros();
+
             foreach (var call in targets)
             {
                 var newCall = DuplicateCallInstruction(call);
@@ -25,6 +28,8 @@ namespace TailCall.Fody
 
                 ilProcessor.InsertAfter(call, newCall);
             }
+
+            body.OptimizeMacros();
         }
 
         private static Instruction DuplicateCallInstruction(Instruction call)
