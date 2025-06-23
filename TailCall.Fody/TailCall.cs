@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -7,55 +7,38 @@ namespace TailCall.Fody
 {
     public class TailCall
     {
-        private static readonly IEnumerable<OpCode> Jumps = new[]
-        {
-            OpCodes.Beq, OpCodes.Beq_S,
-            OpCodes.Bge, OpCodes.Bge_S, OpCodes.Bge_Un, OpCodes.Bge_Un_S,
-            OpCodes.Bgt, OpCodes.Bgt_S, OpCodes.Bgt_Un, OpCodes.Bgt_Un_S,
-            OpCodes.Ble, OpCodes.Ble_S, OpCodes.Ble_Un, OpCodes.Ble_Un_S,
-            OpCodes.Blt, OpCodes.Blt_S, OpCodes.Blt_Un, OpCodes.Blt_Un_S,
-            OpCodes.Bne_Un, OpCodes.Bne_Un_S,
-            OpCodes.Br, OpCodes.Br_S,
-            OpCodes.Brfalse, OpCodes.Brfalse_S,
-            OpCodes.Brtrue, OpCodes.Brtrue_S,
-        };
-
         public void AddTailPrefix(MethodDefinition method)
         {
             var body = method.Body;
             var targets = body.Instructions.Where(IsTarget).Where(IsTailable).ToArray();
 
+            if (targets.Length == 0)
+                return;
+
+            var ilProcessor = body.GetILProcessor();
+
             foreach (var call in targets)
             {
-                var jumps = body.Instructions.Where(x => Jumps.Contains(x.OpCode) && x.Operand.Equals(call)).ToArray();
-                var tail = Instruction.Create(OpCodes.Tail);
+                var newCall = DuplicateCallInstruction(call);
 
-                body.GetILProcessor().InsertBefore(call, tail);
+                OverwriteInstruction(call, OpCodes.Tail, operand: null);
 
-                foreach (var jump in jumps)
-                    jump.Operand = tail;
-
-                MoveSequencePoint(method.DebugInformation, call, tail);
+                ilProcessor.InsertAfter(call, newCall);
             }
         }
 
-        private static void MoveSequencePoint(MethodDebugInformation debugInformation, Instruction from, Instruction to)
-        {
-            if (debugInformation.GetSequencePoint(from) is not { } current)
-                return;
-
-            var moved = new SequencePoint(to, current.Document)
+        private static Instruction DuplicateCallInstruction(Instruction call)
+            => call.OpCode.OperandType switch
             {
-                StartLine = current.StartLine,
-                StartColumn = current.StartColumn,
-                EndLine = current.EndLine,
-                EndColumn = current.EndColumn,
+                OperandType.InlineMethod => Instruction.Create(call.OpCode, (MethodReference)call.Operand),
+                OperandType.InlineSig => Instruction.Create(call.OpCode, (CallSite)call.Operand),
+                _ => throw new NotSupportedException(),
             };
 
-            var sequencePoints = debugInformation.SequencePoints;
-
-            sequencePoints.Remove(current);
-            sequencePoints.Add(moved);
+        private static void OverwriteInstruction(Instruction instruction, OpCode opCode, object? operand)
+        {
+            instruction.OpCode = opCode;
+            instruction.Operand = operand;
         }
 
         private static bool IsTarget(Instruction instruction)
@@ -71,15 +54,15 @@ namespace TailCall.Fody
             => call.Previous?.OpCode == OpCodes.Tail;
 
         private static bool IsTailable(Instruction call)
-            => !IsConstrainedGeneric(call) && call.Operand is MethodReference method && !IsValueTypeInstanceMethod(method) && !HasByReferenceParameter(method);
+            => !IsConstrainedGeneric(call) && call.Operand is IMethodSignature method && !IsValueTypeInstanceMethod(method) && !HasByReferenceParameter(method);
 
         private static bool IsConstrainedGeneric(Instruction call)
             => call.Previous?.OpCode == OpCodes.Constrained;
 
-        private static bool IsValueTypeInstanceMethod(MethodReference method)
-            => method.HasThis && method.DeclaringType.IsValueType;
+        private static bool IsValueTypeInstanceMethod(IMethodSignature method)
+            => method.HasThis && method is MethodReference { DeclaringType.IsValueType: true };
 
-        private static bool HasByReferenceParameter(MethodReference method)
+        private static bool HasByReferenceParameter(IMethodSignature method)
             => method.Parameters.Any(parameter => parameter.ParameterType.IsByReference);
     }
 }
