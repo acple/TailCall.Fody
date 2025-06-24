@@ -3,7 +3,7 @@ version: 2.1
 executors:
   dotnet:
     docker:
-      - image: mcr.microsoft.com/dotnet/sdk:5.0-alpine
+      - image: mcr.microsoft.com/dotnet/sdk:9.0-alpine
     working_directory: /project
 
 jobs:

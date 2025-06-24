@@ -20,6 +20,6 @@ namespace TailCall.Fody
         }
 
         public override IEnumerable<string> GetAssembliesForScanning()
-            => Enumerable.Empty<string>();
+            => [];
     }
 }
